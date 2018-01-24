@@ -1,0 +1,28 @@
+{
+  "name": "constructor-hangman",
+  "version": "0.0.0",
+  "description": "Hangman ",
+  "main": "hangman.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/deanhooker/constructor-hangman.git"
+  },
+  "keywords": [
+    "hangman",
+    "game",
+    "inquirer",
+    "node"
+  ],
+  "author": "DeanH",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/deanhooker/constructor-hangman/issues"
+  },
+  "homepage": "https://github.com/deanhooker/constructor-hangman#readme",
+  "dependencies": {
+    "inquirer": "^5.0.1"
+  }
+}

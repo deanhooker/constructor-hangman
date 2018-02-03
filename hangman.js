@@ -46,12 +46,6 @@ function checkGuess(guess) {
     }
 }
 
-function hangman() {
-
-    newWord();
-    console.log(blanksArray);
-    console.log(correctArray);
-
     function guessFunction() {
         inquirer.prompt([
             {
@@ -67,6 +61,14 @@ function hangman() {
             }
         })
     }
+
+function hangman() {
+
+    newWord();
+    console.log(blanksArray);
+    console.log(correctArray);
+
+
     guessFunction();
 };
 

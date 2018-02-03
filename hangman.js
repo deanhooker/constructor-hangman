@@ -1,26 +1,66 @@
 //declare variables
 const inquirer = require('inquirer');
-const NewWord = require('./NewWord.js');
+const Word = require('./Word.js');
 
 let moviesArray = ['moonlight', 'spotlight', 'birdman', 'argo', 'juno', 'chicago', 'aliens', 'rocky', 'jaws', 'gladiator', 'shrek', 'avatar', 'up', 'inception', 'lincoln', 'interstellar', 'zootopia', 'room', 'cinderella', 'moana', 'superbad', 'fargo', 'aladdin'];
-let guessesLeft; //will be set to 10
 
-//choose word for user to guess
-let moonlight = new NewWord("moonlight");
+let currentWord;
+let guessesLeft;
+let lettersLeft;
+let wrongGuesses;
+let blanksArray = [];
+let correctArray = [];
 
-console.log(moonlight.lettersArray[0].blank);
+function newWord() {
+    //set game variants
+    guessesLeft = 10;
+    lettersLeft = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", " "];
+    wrongGuesses = [];
 
-// generate underscores
+    //set up word
+    let selectedWord = moviesArray[Math.floor(Math.random() * moviesArray.length)];
+    currentWord = new Word(selectedWord).lettersArray;
 
-// prompt user guess
+    for (i = 0; i < currentWord.length; i++) {
+        blanksArray.push(currentWord[i].blank)
+    }
 
-// if guess is correct replace underscore with letter
-// if wrong no. of guesses remaining --
+    for (i = 0; i < currentWord.length; i++) {
+        correctArray.push(currentWord[i].correct)
+    }
+}
 
-// prompt next user guess until all letters guessed
-// display word and congratulatory message
-// next word
+function hangman() {
 
-// or
+    newWord();
+    console.log(blanksArray);
+    console.log(correctArray);
 
-// if guesses remaining = 0 prompt user if they would like to end game
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "guess",
+            message: blanksArray.join(' ') + "\n"
+        }
+    ]).then(function (user) {
+        if (lettersLeft.indexOf(user.guess != -1)) {
+            lettersLeft.splice(lettersLeft.indexOf(user.guess), 1);
+            console.log(lettersLeft);
+        }
+    })
+
+};
+
+//lets play!
+inquirer.prompt([
+    {
+        type: "list",
+        name: "playGame",
+        message: "Movie Hangman!! Would you like to play?",
+        choices: ["Yes", "No"]
+    }
+]).then(function (user) {
+    if (user.playGame === "Yes") {
+        hangman();
+    }
+});

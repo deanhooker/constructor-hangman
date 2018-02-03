@@ -3,13 +3,13 @@ var Letter = function (letter) {
     this.blank = "_";
 }
 
-var NewWord = function (word) {
+var Word = function (word) {
     this.word = word;
     this.wordArray = word.split("");
     this.lettersArray = this.createLettersArray(this.wordArray);
 }
 
-NewWord.prototype.createLettersArray = function (wordArray) {
+Word.prototype.createLettersArray = function (wordArray) {
     let letterArray = [];
     for (i = 0; i < wordArray.length; i++) {
         var ltr = new Letter(wordArray[i]);
@@ -18,4 +18,4 @@ NewWord.prototype.createLettersArray = function (wordArray) {
     return letterArray;
 };
 
-module.exports = NewWord;
+module.exports = Word;

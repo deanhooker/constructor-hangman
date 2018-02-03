@@ -1,7 +1,8 @@
-//declare variables
+//declare global variables
 const inquirer = require('inquirer');
 const Word = require('./Word.js');
 
+//hangman words array
 let moviesArray = ['moonlight', 'spotlight', 'birdman', 'argo', 'juno', 'chicago', 'aliens', 'rocky', 'jaws', 'gladiator', 'shrek', 'avatar', 'up', 'inception', 'lincoln', 'interstellar', 'zootopia', 'room', 'cinderella', 'moana', 'superbad', 'fargo', 'aladdin'];
 
 let currentWord;
@@ -11,8 +12,9 @@ let wrongGuesses;
 let blanksArray = [];
 let correctArray = [];
 
+//set up new game
 function newWord() {
-    //set game variants
+    //reset game variants
     guessesLeft = 10;
     lettersLeft = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", " "];
     wrongGuesses = [];
@@ -21,18 +23,21 @@ function newWord() {
     let selectedWord = moviesArray[Math.floor(Math.random() * moviesArray.length)];
     currentWord = new Word(selectedWord).lettersArray;
 
+    //create array of blanks
     for (i = 0; i < currentWord.length; i++) {
         blanksArray.push(currentWord[i].blank)
     }
 
+    //create array of letters
     for (i = 0; i < currentWord.length; i++) {
         correctArray.push(currentWord[i].correct)
     }
 }
 
+//function checking if user guess is correct and pushing it to the display array if so
 function checkGuess(guess) {
 
-    let found = false; //lets use bool to check if a letter was found
+    let found = false; //use bool to check if a letter was found
     for (i = 0; i < correctArray.length; i++) {
 
         if (guess === correctArray[i]) {
@@ -41,33 +46,33 @@ function checkGuess(guess) {
             found = true;
         }
     }
+    //return bool checking if letter is found
     if (found) {
         return found;
     }
 }
 
-    function guessFunction() {
-        inquirer.prompt([
-            {
-                type: "input",
-                name: "guess",
-                message: blanksArray.join(' ') + "\n"
-            }
-        ]).then(function (user) {
-            if (lettersLeft.indexOf(user.guess != -1)) {
-                lettersLeft.splice(lettersLeft.indexOf(user.guess), 1);
-                checkGuess(user.guess);
-                guessFunction();
-            }
-        })
-    }
+//function asking for user input then running check guess function
+function guessFunction() {
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "guess",
+            message: blanksArray.join(' ') + "\n"
+        }
+    ]).then(function (user) {
+        if (lettersLeft.indexOf(user.guess != -1)) {
+            lettersLeft.splice(lettersLeft.indexOf(user.guess), 1);
+            checkGuess(user.guess);
+            guessFunction();
+        }
+    })
+}
 
+//game function
 function hangman() {
 
     newWord();
-    console.log(blanksArray);
-    console.log(correctArray);
-
 
     guessFunction();
 };

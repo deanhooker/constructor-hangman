@@ -18,6 +18,8 @@ function newWord() {
     guessesLeft = 10;
     lettersLeft = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", " "];
     wrongGuesses = [];
+    blanksArray = [];
+    correctArray = [];
 
     //set up word
     let selectedWord = moviesArray[Math.floor(Math.random() * moviesArray.length)];
@@ -54,20 +56,26 @@ function checkGuess(guess) {
 
 //function asking for user input then running check guess function
 function guessFunction() {
-    inquirer.prompt([
-        {
-            type: "input",
-            name: "guess",
-            message: blanksArray.join(' ') + "\n"
-        }
-    ]).then(function (user) {
-        if (lettersLeft.indexOf(user.guess != -1)) {
-            lettersLeft.splice(lettersLeft.indexOf(user.guess), 1);
-            checkGuess(user.guess);
-            guessFunction();
-        }
-    })
-}
+    if (blanksArray.includes("_")) {
+        inquirer.prompt([
+            {
+                type: "input",
+                name: "guess",
+                message: blanksArray.join(' ') + "\n"
+            }
+        ]).then(function (user) {
+            if (lettersLeft.indexOf(user.guess != -1)) {
+                lettersLeft.splice(lettersLeft.indexOf(user.guess), 1);
+                checkGuess(user.guess);
+                guessFunction();
+            }
+        })
+    }
+    else {
+        console.log("You got it!! \nThe answer was " + blanksArray.join(''));
+        hangman();
+    }
+}    
 
 //game function
 function hangman() {

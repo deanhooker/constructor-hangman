@@ -11,6 +11,7 @@ let lettersLeft;
 let wrongGuesses;
 let blanksArray = [];
 let correctArray = [];
+let wins = 0;
 
 //set up new game
 function newWord() {
@@ -23,6 +24,7 @@ function newWord() {
 
     //set up word
     let selectedWord = moviesArray[Math.floor(Math.random() * moviesArray.length)];
+    moviesArray.splice(moviesArray.indexOf(selectedWord), 1);
     currentWord = new Word(selectedWord).lettersArray;
 
     //create array of blanks
@@ -49,13 +51,12 @@ function checkGuess(guess) {
         }
     }
     //return bool checking if letter is found
-    if (found) {
-        return found;
-    }
+    return found;
 }
 
 //function asking for user input then running check guess function
 function guessFunction() {
+    //if the array still contains underscores then keep going, else the word has been correctly guessed
     if (blanksArray.includes("_")) {
         inquirer.prompt([
             {
@@ -64,16 +65,42 @@ function guessFunction() {
                 message: blanksArray.join(' ') + "\n"
             }
         ]).then(function (user) {
-            if (lettersLeft.indexOf(user.guess != -1)) {
+            var lettersLeftTrue = lettersLeft.indexOf(user.guess);
+            if (lettersLeftTrue != -1) {
                 lettersLeft.splice(lettersLeft.indexOf(user.guess), 1);
                 checkGuess(user.guess);
+                guessFunction();
+            }
+            else {
+                console.log("");
+                console.log("Invalid/already guessed character");
+                console.log("Letters left: " + lettersLeft.join(' '));
+                console.log("");
                 guessFunction();
             }
         })
     }
     else {
-        console.log("You got it!! \nThe answer was " + blanksArray.join(''));
-        hangman();
+        console.log("You got it!! \nThe answer was " + blanksArray.join('') + "\n");
+        wins++;
+        inquirer.prompt([
+            {
+                type: "list",
+                name: "playGame",
+                message: "Play Again?",
+                choices: ["Yes", "No"]
+            }
+        ]).then(function (user) {
+            if (user.playGame === "Yes") {
+                hangman();
+            }
+            else {
+                console.log("");
+                console.log("Thanks for playing!");
+                console.log("Final score: " + wins);
+                console.log("");
+            }
+        });
     }
 }    
 

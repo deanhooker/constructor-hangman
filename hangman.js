@@ -1,10 +1,14 @@
 //declare variables
 const inquirer = require('inquirer');
+const NewWord = require('./NewWord.js');
 
 let moviesArray = ['moonlight', 'spotlight', 'birdman', 'argo', 'juno', 'chicago', 'aliens', 'rocky', 'jaws', 'gladiator', 'shrek', 'avatar', 'up', 'inception', 'lincoln', 'interstellar', 'zootopia', 'room', 'cinderella', 'moana', 'superbad', 'fargo', 'aladdin'];
 let guessesLeft; //will be set to 10
 
 //choose word for user to guess
+let moonlight = new NewWord("moonlight");
+
+console.log(moonlight.lettersArray[0].blank);
 
 // generate underscores
 

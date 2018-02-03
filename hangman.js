@@ -30,25 +30,44 @@ function newWord() {
     }
 }
 
+function checkGuess(guess) {
+
+    let found = false; //lets use bool to check if a letter was found
+    for (i = 0; i < correctArray.length; i++) {
+
+        if (guess === correctArray[i]) {
+
+            blanksArray[i] = guess;
+            found = true;
+        }
+    }
+    if (found) {
+        return found;
+    }
+}
+
 function hangman() {
 
     newWord();
     console.log(blanksArray);
     console.log(correctArray);
 
-    inquirer.prompt([
-        {
-            type: "input",
-            name: "guess",
-            message: blanksArray.join(' ') + "\n"
-        }
-    ]).then(function (user) {
-        if (lettersLeft.indexOf(user.guess != -1)) {
-            lettersLeft.splice(lettersLeft.indexOf(user.guess), 1);
-            console.log(lettersLeft);
-        }
-    })
-
+    function guessFunction() {
+        inquirer.prompt([
+            {
+                type: "input",
+                name: "guess",
+                message: blanksArray.join(' ') + "\n"
+            }
+        ]).then(function (user) {
+            if (lettersLeft.indexOf(user.guess != -1)) {
+                lettersLeft.splice(lettersLeft.indexOf(user.guess), 1);
+                checkGuess(user.guess);
+                guessFunction();
+            }
+        })
+    }
+    guessFunction();
 };
 
 //lets play!

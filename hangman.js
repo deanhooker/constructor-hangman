@@ -2,23 +2,22 @@
 const inquirer = require('inquirer');
 const Word = require('./Word.js');
 
-//hangman words array
-let moviesArray = ['moonlight', 'spotlight', 'birdman', 'argo', 'juno', 'chicago', 'aliens', 'rocky', 'jaws', 'gladiator', 'shrek', 'avatar', 'up', 'inception', 'lincoln', 'interstellar', 'zootopia', 'room', 'cinderella', 'moana', 'superbad', 'fargo', 'aladdin'];
-
 let currentWord;
 let guessesLeft;
 let lettersLeft;
-let wrongGuesses;
 let blanksArray = [];
 let correctArray = [];
 let wins = 0;
 
-//set up new game
+//hangman words array
+let moviesArray = ['aliens', 'rocky', 'gladiator', 'shrek', 'avatar', 'inception', 'lincoln', 'interstellar', 'moana', 'superbad'];
+
+
+//set up new word
 function newWord() {
     //reset game variants
     guessesLeft = 10;
-    lettersLeft = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", " "];
-    wrongGuesses = [];
+    lettersLeft = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
     blanksArray = [];
     correctArray = [];
 
@@ -56,33 +55,10 @@ function checkGuess(guess) {
 
 //function asking for user input then running check guess function
 function guessFunction() {
-    //if the array still contains underscores then keep going, else the word has been correctly guessed
-    if (blanksArray.includes("_")) {
-        inquirer.prompt([
-            {
-                type: "input",
-                name: "guess",
-                message: blanksArray.join(' ') + "\n"
-            }
-        ]).then(function (user) {
-            var lettersLeftTrue = lettersLeft.indexOf(user.guess);
-            if (lettersLeftTrue != -1) {
-                lettersLeft.splice(lettersLeft.indexOf(user.guess), 1);
-                checkGuess(user.guess);
-                guessFunction();
-            }
-            else {
-                console.log("");
-                console.log("Invalid/already guessed character");
-                console.log("Letters left: " + lettersLeft.join(' '));
-                console.log("");
-                guessFunction();
-            }
-        })
-    }
-    else {
-        console.log("You got it!! \nThe answer was " + blanksArray.join('') + "\n");
-        wins++;
+
+    //check if game over? else continue...
+    if (guessesLeft === 0) {
+        console.log("\nYou lose!\n");
         inquirer.prompt([
             {
                 type: "list",
@@ -91,6 +67,7 @@ function guessFunction() {
                 choices: ["Yes", "No"]
             }
         ]).then(function (user) {
+
             if (user.playGame === "Yes") {
                 hangman();
             }
@@ -100,17 +77,107 @@ function guessFunction() {
                 console.log("Final score: " + wins);
                 console.log("");
             }
+
         });
     }
-}    
+    //if the array still contains underscores then keep going, else the word has been correctly guessed
+    else if (blanksArray.includes("_")) {
+
+        inquirer.prompt([
+            {
+                type: "input",
+                name: "guess",
+                message: "\n\nGuesses left: " + guessesLeft + "\n" + blanksArray.join(' ') + "\n"
+            }
+        ]).then(function (user) {
+
+            // is user guess permitted???
+            var lettersLeftTrue = lettersLeft.indexOf(user.guess);
+
+            if (lettersLeftTrue != -1) {
+                lettersLeft.splice(lettersLeft.indexOf(user.guess), 1);
+                checkGuess(user.guess);
+
+                if (!checkGuess(user.guess)) {
+                    guessesLeft--;
+                }
+
+                guessFunction();
+            }
+            else {
+
+                console.log("");
+                console.log("Please enter a single unguessed letter");
+                console.log("Letters left: " + lettersLeft.join(' '));
+                console.log("");
+
+                guessFunction();
+            }
+
+        })
+    }
+    // user guessed full word correctly!    
+    else {
+        console.log("\nYou got it!! \nThe answer was " + blanksArray.join('') + "\n");
+        wins++;
+        inquirer.prompt([
+            {
+                type: "list",
+                name: "playGame",
+                message: "Play Again?",
+                choices: ["Yes", "No"]
+            }
+        ]).then(function (user) {
+
+            if (user.playGame === "Yes") {
+                hangman();
+            }
+            else {
+                console.log("");
+                console.log("Thanks for playing!");
+                console.log("Final score: " + wins);
+                console.log("");
+            }
+
+        });
+    }
+}
 
 //game function
 function hangman() {
 
-    newWord();
-
-    guessFunction();
+    if (moviesArray.length === 0) {
+        inquirer.prompt([
+            {
+                type: "list",
+                name: "playAgain",
+                message: "Final score: " + wins + "\nNo words left!!\nWould you like to start again?",
+                choices: ["Yes", "No"]
+            }
+        ]).then(function (user) {
+            if (user.playAgain === "Yes") {
+                resetGame();
+                hangman();
+            }
+            else {
+                console.log("");
+                console.log("Thanks for playing!");
+                console.log("Final score: " + wins);
+                console.log("");
+            }
+        })
+    }
+    else {
+        newWord();
+        guessFunction();
+    }    
 };
+
+function resetGame() {
+    //reset movie array and wins
+    moviesArray = ['aliens', 'rocky', 'gladiator', 'shrek', 'avatar', 'inception', 'lincoln', 'interstellar', 'moana', 'superbad'];
+    wins = 0;
+}
 
 //lets play!
 inquirer.prompt([
